@@ -20,6 +20,7 @@
     <None Remove="DBHandler\" />
     <None Remove="DBHandler\Entity\" />
     <None Remove="Controllers\Structures\" />
+    <None Remove="Views\DBData\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\" />
@@ -30,6 +31,7 @@
     <Folder Include="DBHandler\" />
     <Folder Include="DBHandler\Entity\" />
     <Folder Include="Controllers\Structures\" />
+    <Folder Include="Views\DBData\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ArpLookup" Version="2.0.3" />

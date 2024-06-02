@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SystemWakeUp.Controllers.Structures;
 using SystemWakeUp.DBHandler;
 using SystemWakeUp.DBHandler.Entity;
 using SystemWakeUp.Services;
@@ -11,6 +12,8 @@ using SystemWakeUp.Services;
 
 namespace SystemWakeUp.Controllers
 {
+
+
     [ApiController]
     [Route("api/dbdata")]
     public class DBDataController : Controller
@@ -23,9 +26,17 @@ namespace SystemWakeUp.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<DBEntity>>> GetEntities()
+        public async Task<ActionResult<List<DBEntity>>> GetEntities(int page = 1,int pagesize = 10)
         {
-            return await _entityService.GetAllEntitiesAsync();
+            var data = await _entityService.GetAllEntitiesAsync();
+            var paginateddata = data.OrderByDescending(d => d.lastlogin).Skip((page - 1) * pagesize).Take(pagesize).ToList();
+            var viewModel = new PaginatedViewModel
+            {
+                Data = paginateddata,
+                PageNumber = page,
+                TotalPages = (int)Math.Ceiling(data.Count / (double)pagesize)
+            };
+            return View(viewModel);
         }
 
         [HttpGet("{id}")]

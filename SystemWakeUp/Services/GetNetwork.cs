@@ -47,6 +47,14 @@ public class GetNetwork : IHostedService
 
 
         mastermac = "None";
+        Console.WriteLine(@"
+
+
+                        MySystemWakeUP
+------------------------------------------------------------------
+
+
+");
         Console.WriteLine($"mastermac: {mastermac}");
         Console.WriteLine("Obtaining Master's device...");
         string master = ReadWriteConfig.ReadMaster();
@@ -113,7 +121,6 @@ public class GetNetwork : IHostedService
                         }
                         string trimmedmac = macs[x].Replace(":", "").Replace("-", "");
                         Console.WriteLine($"Trying to send magic package to {trimmedmac}");
-                        Console.WriteLine("Sleeping for 30secs...");
                         MagicPacket.Broadcast(trimmedmac);
                         mastermac = "None";
                     }
@@ -131,6 +138,8 @@ public class GetNetwork : IHostedService
             _lastStatus.lastStatus = false;
             mastermac = "None";
         }
+        Console.WriteLine("Sleeping for 10secs...");
+
     }
 
     private DBEntity UpdateDB(string masterMac)

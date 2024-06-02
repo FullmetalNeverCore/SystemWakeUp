@@ -94,7 +94,8 @@ namespace SystemWakeUp.Scripts
 					string res = reader.ReadToEnd();
                     if(_errorcases.Any(x => x.Equals(res.Trim(), StringComparison.OrdinalIgnoreCase)))
                     {
-						throw new InvalidMacException("Script returns None value");
+                        //throw new InvalidMacException("Script returns None value");
+                        return "None";
 					}
 					Console.WriteLine($"Obtained MAC: {res}");
 					return res; 

@@ -29,7 +29,7 @@ namespace SystemWakeUp.Controllers
         public async Task<ActionResult<List<DBEntity>>> GetEntities(int page = 1,int pagesize = 10)
         {
             var data = await _entityService.GetAllEntitiesAsync();
-            var paginateddata = data.OrderByDescending(d => d.lastlogin).Skip((page - 1) * pagesize).Take(pagesize).ToList();
+            var paginateddata = data.OrderByDescending(d => d.lastlogin).Where(x => x.mac != "None").Skip((page - 1) * pagesize).Take(pagesize).ToList();
             var viewModel = new PaginatedViewModel
             {
                 Data = paginateddata,

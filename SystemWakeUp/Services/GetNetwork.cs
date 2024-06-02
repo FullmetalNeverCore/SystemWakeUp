@@ -21,6 +21,7 @@ public class GetNetwork : IHostedService
     private readonly List<string> _devices = new List<string> { "192.168.8.186" }; //devices to send magic packet to.
     private readonly LastStatus _lastStatus;
 
+
     public GetNetwork(IServiceScopeFactory scopeFactory, LastStatus lastStatus)
     {
         _scopeFactory = scopeFactory;

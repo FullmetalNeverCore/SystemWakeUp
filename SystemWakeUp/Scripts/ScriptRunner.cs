@@ -6,8 +6,11 @@ using SystemWakeUp.Network.Misc;
 
 namespace SystemWakeUp.Scripts
 {
-	public class ScriptRunner
+	public static class ScriptRunner
 	{
+
+        private static List<string> _errorcases = new List<string> { "None", "00:00:00:00:00:00" };
+
 
         public static string SearchForMaster(string mastermac)
         {
@@ -45,7 +48,7 @@ namespace SystemWakeUp.Scripts
                 using (StreamReader reader = process.StandardOutput)
                 {
                     string res = reader.ReadToEnd();
-                    if (res.Trim() == "None")
+                    if (_errorcases.Any(x => x.Equals(res.Trim(),StringComparison.OrdinalIgnoreCase)))
                     {
                         return "None";
                     }
@@ -89,8 +92,8 @@ namespace SystemWakeUp.Scripts
                 using (StreamReader reader = process.StandardOutput)
 				{
 					string res = reader.ReadToEnd();
-					if(res == "None")
-					{
+                    if(_errorcases.Any(x => x.Equals(res.Trim(), StringComparison.OrdinalIgnoreCase)))
+                    {
 						throw new InvalidMacException("Script returns None value");
 					}
 					Console.WriteLine($"Obtained MAC: {res}");

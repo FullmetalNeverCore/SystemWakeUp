@@ -1,0 +1,42 @@
+﻿@model SystemWakeUp.Controllers.Structures.PaginatedViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WOL Data</title>
+</head>
+<body>
+    <h1>Data from DB</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Last Login</th>
+                <th>MAC Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Data)
+            {
+                <tr>
+                    <td>@item.lastlogin</td>
+                    <td>@item.mac</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        @if (Model.PageNumber > 1)
+        {
+            <a href="/api/dbdata?page=@(Model.PageNumber - 1)&pageSize=10">Previous</a>
+        }
+
+        Page @Model.PageNumber of @Model.TotalPages
+
+        @if (Model.PageNumber < Model.TotalPages)
+        {
+            <a href="/api/dbdata?page=@(Model.PageNumber + 1)&pageSize=10">Next</a>
+        }
+    </div>
+</body>
+</html>

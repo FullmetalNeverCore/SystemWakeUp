@@ -21,7 +21,7 @@ namespace SystemWakeUp.Network
             }
 
             Console.WriteLine($"Trying to get mac of {ipAddress}....");
-            //use ScriptRunner to obtain mac
+            //use ScriptRunner to obtain mac of master pc
             return ScriptRunner.RunProcess(ipAddress);
         }
 

@@ -33,9 +33,11 @@ namespace SystemWakeUp.Network
             int counter = 0;
             byte[] bytes = new byte[102];
 
+            //brewing magic packet
+            //6 times 255(FF) 
             for (int x = 0; x < 6; x++)
-                bytes[counter++] = 0xFF;
-
+                bytes[counter++] = 0xFF; //FF 255
+            //16 times device mac
             for (int macPackets = 0; macPackets < 16; macPackets++)
                 for (int macBytes = 0; macBytes < 12; macBytes += 2)
                     bytes[counter++] = byte.Parse(macAddress.Substring(macBytes, 2), NumberStyles.HexNumber);

@@ -54,7 +54,7 @@ public class GetNetwork : IHostedService
 ------------------------------------------------------------------
 
 
-");
+        ");
         Console.WriteLine($"mastermac: {mastermac}");
         Console.WriteLine("Obtaining Master's device...");
         string master = ReadWriteConfig.ReadMaster();

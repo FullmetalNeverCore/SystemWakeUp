@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -17,9 +16,10 @@ using SystemWakeUp.Services;
 public class GetNetwork : IHostedService
 {
     private Timer _timer;
-    private readonly IServiceScopeFactory _scopeFactory; 
-    private readonly List<string> _devices = new List<string> { (string)File.ReadAllLines("masterpc.txt")[0] }; //devices to send magic packet to.
+    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly List<string> _devices = new List<string> { "192.168.8.186" }; //devices to send magic packet to.
     private readonly LastStatus _lastStatus;
+    private TimeSpan _repeat;
 
 
     public GetNetwork(IServiceScopeFactory scopeFactory, LastStatus lastStatus)
@@ -30,8 +30,9 @@ public class GetNetwork : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
+        _repeat = TimeSpan.FromSeconds(20);
         // Start the timer to check the network every 30 seconds
-        _timer = new Timer(async _ => await CheckNetwork(), null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+        _timer = new Timer(async _ => await CheckNetwork(), null, TimeSpan.Zero, _repeat);
         return Task.CompletedTask;
     }
 
@@ -41,20 +42,36 @@ public class GetNetwork : IHostedService
         return Task.CompletedTask;
     }
 
-    private async Task CheckNetwork()
+    public void PrintStat()
     {
-        string mastermac;
-
-
-        mastermac = "None";
+        Console.Clear();
         Console.WriteLine(@"
 
+                                                                         
+   d888888o.  `8.`888b                 ,8' 8 8888      88 8 888888888o   
+ .`8888:' `88. `8.`888b               ,8'  8 8888      88 8 8888    `88. 
+ 8.`8888.   Y8  `8.`888b             ,8'   8 8888      88 8 8888     `88 
+ `8.`8888.       `8.`888b     .b    ,8'    8 8888      88 8 8888     ,88 
+  `8.`8888.       `8.`888b    88b  ,8'     8 8888      88 8 8888.   ,88' 
+   `8.`8888.       `8.`888b .`888b,8'      8 8888      88 8 888888888P'  
+    `8.`8888.       `8.`888b8.`8888'       8 8888      88 8 8888         
+8b   `8.`8888.       `8.`888`8.`88'        ` 8888     ,8P 8 8888         
+`8b.  ;8.`8888        `8.`8' `8,`'           8888   ,d8P  8 8888         
+ `Y8888P ,88P'         `8.`   `8'             `Y88888P'   8 8888         
 
-                        MySystemWakeUP
+
 ------------------------------------------------------------------
 
 
         ");
+    }
+
+    private async Task CheckNetwork()
+    {
+        string mastermac;
+
+        PrintStat();
+        mastermac = "None";
         Console.WriteLine($"mastermac: {mastermac}");
         Console.WriteLine("Obtaining Master's device...");
         string master = ReadWriteConfig.ReadMaster();
@@ -86,6 +103,7 @@ public class GetNetwork : IHostedService
 
         if (mastermac != "None")
         {
+            Console.WriteLine("Master Device in the network.");
             if (_lastStatus.lastStatus == false)
             {
                 Console.WriteLine("Previous Status was False,sending magic packet...");
@@ -103,12 +121,6 @@ public class GetNetwork : IHostedService
                     macs = ReadWriteConfig.Read();
                 }
 
-                //foreach(var x in macs)
-                //{
-                //    Console.WriteLine(x);
-                //}
-
-                //MagicPacket.Broadcast("309c23e1c450");
                 for (int x = 0; x < macs.Count(); x++)
                 {
                     if (macs[x].Trim() != "None")
@@ -138,7 +150,7 @@ public class GetNetwork : IHostedService
             _lastStatus.lastStatus = false;
             mastermac = "None";
         }
-        Console.WriteLine("Sleeping for 10secs...");
+        Console.WriteLine($"Sleeping for {_repeat.ToString()}secs...");
 
     }
 
@@ -151,4 +163,3 @@ public class GetNetwork : IHostedService
         };
     }
 }
-

@@ -20,6 +20,7 @@ public class GetNetwork : IHostedService
     private readonly IServiceScopeFactory _scopeFactory; 
     private readonly List<string> _devices = new List<string> { "192.168.8.186" }; //devices to send magic packet to.
     private readonly LastStatus _lastStatus;
+    private TimeSpan _repeat;
 
 
     public GetNetwork(IServiceScopeFactory scopeFactory, LastStatus lastStatus)
@@ -30,8 +31,9 @@ public class GetNetwork : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
+        _repeat = TimeSpan.FromSeconds(20);
         // Start the timer to check the network every 30 seconds
-        _timer = new Timer(async _ => await CheckNetwork(), null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+        _timer = new Timer(async _ => await CheckNetwork(), null, TimeSpan.Zero, _repeat);
         return Task.CompletedTask;
     }
 
@@ -41,20 +43,36 @@ public class GetNetwork : IHostedService
         return Task.CompletedTask;
     }
 
+    public void PrintStat()
+    {
+        Console.Clear();
+        Console.WriteLine(@"
+
+                                                                         
+   d888888o.  `8.`888b                 ,8' 8 8888      88 8 888888888o   
+ .`8888:' `88. `8.`888b               ,8'  8 8888      88 8 8888    `88. 
+ 8.`8888.   Y8  `8.`888b             ,8'   8 8888      88 8 8888     `88 
+ `8.`8888.       `8.`888b     .b    ,8'    8 8888      88 8 8888     ,88 
+  `8.`8888.       `8.`888b    88b  ,8'     8 8888      88 8 8888.   ,88' 
+   `8.`8888.       `8.`888b .`888b,8'      8 8888      88 8 888888888P'  
+    `8.`8888.       `8.`888b8.`8888'       8 8888      88 8 8888         
+8b   `8.`8888.       `8.`888`8.`88'        ` 8888     ,8P 8 8888         
+`8b.  ;8.`8888        `8.`8' `8,`'           8888   ,d8P  8 8888         
+ `Y8888P ,88P'         `8.`   `8'             `Y88888P'   8 8888         
+
+
+------------------------------------------------------------------
+
+
+        ");
+    }
+
     private async Task CheckNetwork()
     {
         string mastermac;
 
-
+        PrintStat();
         mastermac = "None";
-        Console.WriteLine(@"
-
-
-                        MySystemWakeUP
-------------------------------------------------------------------
-
-
-");
         Console.WriteLine($"mastermac: {mastermac}");
         Console.WriteLine("Obtaining Master's device...");
         string master = ReadWriteConfig.ReadMaster();
@@ -86,6 +104,7 @@ public class GetNetwork : IHostedService
 
         if (mastermac != "None")
         {
+            Console.WriteLine("Master Device in the network.");
             if (_lastStatus.lastStatus == false)
             {
                 Console.WriteLine("Previous Status was False,sending magic packet...");
@@ -138,7 +157,7 @@ public class GetNetwork : IHostedService
             _lastStatus.lastStatus = false;
             mastermac = "None";
         }
-        Console.WriteLine("Sleeping for 10secs...");
+        Console.WriteLine($"Sleeping for {_repeat.ToString()}secs...");
 
     }
 

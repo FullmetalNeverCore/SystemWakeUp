@@ -18,7 +18,7 @@ public class GetNetwork : IHostedService
 {
     private Timer _timer;
     private readonly IServiceScopeFactory _scopeFactory; 
-    private readonly List<string> _devices = new List<string> { "192.168.8.186" }; //devices to send magic packet to.
+    private readonly List<string> _devices = new List<string> { File.ReadAllLines("masterpc.txt")[0] }; //devices to send magic packet to.
     private readonly LastStatus _lastStatus;
     private TimeSpan _repeat;
 
